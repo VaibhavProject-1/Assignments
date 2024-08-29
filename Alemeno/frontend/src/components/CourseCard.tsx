@@ -1,6 +1,8 @@
 // src/components/CourseCard.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 interface CourseCardProps {
   courseId: string;
@@ -21,10 +23,14 @@ const CourseCard: React.FC<CourseCardProps> = ({
   progress,
   completed,
 }) => {
+  const darkMode = useSelector((state: RootState) => state.theme.darkMode); // Access the dark mode state
+
   return (
     <Link
       to={`/course/${courseId}`}
-      className="course-card transform hover:scale-105 transition-transform duration-300 bg-white shadow-lg rounded-lg overflow-hidden"
+      className={`course-card transform hover:scale-105 transition-transform duration-300 shadow-lg rounded-lg overflow-hidden ${
+        darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'
+      }`}
     >
       <img
         src={imageUrl || 'https://via.placeholder.com/300x200?text=No+Image'}
@@ -32,14 +38,14 @@ const CourseCard: React.FC<CourseCardProps> = ({
         className="w-full h-40 object-cover"
       />
       <div className="p-4">
-        <h2 className="text-lg font-bold text-gray-900 mb-2">{name}</h2>
-        <p className="text-sm text-gray-600 mb-2">Instructor: {instructor}</p>
-        {description && <p className="text-gray-700 line-clamp-3">{description}</p>}
+        <h2 className={`text-lg font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{name}</h2>
+        <p className={`text-sm mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Instructor: {instructor}</p>
+        {description && <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'} line-clamp-3`}>{description}</p>}
       </div>
       {(progress !== undefined || completed !== undefined) && (
-        <div className="bg-gray-100 p-4">
-          {progress !== undefined && <p className="text-gray-500 mb-4">Progress: {progress}%</p>}
-          {completed !== undefined && <p className="text-gray-500 mb-4">Completed: {completed ? 'Yes' : 'No'}</p>}
+        <div className={`p-4 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
+          {progress !== undefined && <p className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Progress: {progress}%</p>}
+          {completed !== undefined && <p className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Completed: {completed ? 'Yes' : 'No'}</p>}
         </div>
       )}
     </Link>

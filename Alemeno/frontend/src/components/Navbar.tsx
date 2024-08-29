@@ -135,7 +135,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className={`p-4 ${darkMode ? 'bg-gray-900 text-white' : 'bg-blue-600 text-white'}`}>
+    <nav className={`p-4 ${darkMode ? 'bg-green-900 text-white' : 'bg-blue-600 text-white'}`}>
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-lg font-semibold">
           All Courses
