@@ -6,13 +6,13 @@ import {
   STUDENT_ACTION_TYPES,
   StudentActionTypes
 } from '../types/studentTypes';
-import { fetchEnrolledCourses as fetchEnrolledCoursesApi } from '../../api/studentApi';
+import { fetchEnrolledCoursesByEmail  as fetchEnrolledCoursesApi } from '../../api/studentApi';
 
-export const fetchEnrolledCourses = (studentId: string): ThunkAction<void, RootState, unknown, StudentActionTypes> => {
+export const fetchEnrolledCourses = (email: string): ThunkAction<void, RootState, unknown, StudentActionTypes> => {
   return async (dispatch: Dispatch<StudentActionTypes>) => {
     dispatch({ type: STUDENT_ACTION_TYPES.FETCH_ENROLLED_COURSES_REQUEST });
     try {
-      const courses = await fetchEnrolledCoursesApi(studentId);
+      const courses = await fetchEnrolledCoursesApi(email);
       dispatch({
         type: STUDENT_ACTION_TYPES.FETCH_ENROLLED_COURSES_SUCCESS,
         payload: courses,

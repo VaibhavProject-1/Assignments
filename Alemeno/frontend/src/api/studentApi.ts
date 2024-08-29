@@ -3,8 +3,8 @@ import axios from 'axios';
 
 const API_URL = `${process.env.REACT_APP_API_URL}/students`;
 
-export const fetchEnrolledCourses = async (studentId: string) => {
-  const response = await axios.get(`${API_URL}/${studentId}/courses`);
+export const fetchEnrolledCoursesByEmail = async (email: string) => {
+  const response = await axios.get(`${API_URL}/email/${email}/courses`);
   return response.data;
 };
 

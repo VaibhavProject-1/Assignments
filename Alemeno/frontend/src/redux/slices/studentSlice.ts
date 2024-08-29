@@ -1,5 +1,6 @@
+// src/redux/slices/studentSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { fetchEnrolledCourses as fetchEnrolledCoursesApi } from '../../api/studentApi';
+import { fetchEnrolledCoursesByEmail as fetchEnrolledCoursesApi } from '../../api/studentApi'; // Adjusted import to use email function
 
 // Define the initial state and type
 interface StudentState {
@@ -18,13 +19,13 @@ const initialState: StudentState = {
 // Define async thunk
 export const fetchEnrolledCourses = createAsyncThunk<
   any[], // Return type of the payload
-  string, // Type of the parameter
+  string, // Type of the parameter (email)
   { rejectValue: string } // Type of the reject value
 >(
   'student/fetchEnrolledCourses',
-  async (studentId: string, { rejectWithValue }) => {
+  async (email: string, { rejectWithValue }) => {
     try {
-      const response = await fetchEnrolledCoursesApi(studentId);
+      const response = await fetchEnrolledCoursesApi(email); // Use email instead of studentId
       return response;
     } catch (error) {
       return rejectWithValue(error instanceof Error ? error.message : 'An unknown error occurred');

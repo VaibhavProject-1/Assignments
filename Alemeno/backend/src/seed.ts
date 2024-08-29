@@ -429,9 +429,9 @@ const seedCourses = async () => {
         await Course.insertMany(courses);
         console.log('Courses seeded!');
     
-        // Insert students
-        await Student.insertMany(students);
-        console.log('Students seeded!');
+        // // Insert students
+        // await Student.insertMany(students);
+        // console.log('Students seeded!');
       } catch (error) {
         console.error('Error seeding data:', error);
       } finally {

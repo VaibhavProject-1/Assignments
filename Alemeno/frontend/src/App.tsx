@@ -2,16 +2,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import CourseList from './components/CourseList';
-import CourseDetail from './components/CourseDetail';
-import StudentDashboard from './components/StudentDashboard';
-import Login from './components/Login';
+import CourseList from './pages/CourseList';
+import CourseDetail from './pages/CourseDetail';
+import StudentDashboard from './pages/StudentDashboard';
+import Login from './pages/Login';
 import { RootState } from './redux/store';
 import Navbar from './components/Navbar';
 
 const App: React.FC = () => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-  const studentId = useSelector((state: RootState) => state.auth.email) || '';
+  const email = useSelector((state: RootState) => state.auth.email) || '';
 
   return (
     <Router>
@@ -24,8 +24,8 @@ const App: React.FC = () => {
           <Route
             path="/dashboard"
             element={
-              isAuthenticated && studentId ? (
-                <StudentDashboard studentId={studentId} />
+              isAuthenticated && email ? (
+                <StudentDashboard email={email} />
               ) : (
                 <Navigate to="/login" replace />
               )

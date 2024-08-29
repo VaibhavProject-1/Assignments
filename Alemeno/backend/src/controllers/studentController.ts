@@ -35,6 +35,23 @@ export const getStudentDetails = async (req: Request, res: Response) => {
   }
 };
 
+// Get enrolled courses for a student
+export const getStudentEnrolledCoursesByEmail = async (req: Request, res: Response) => {
+  const { email } = req.params;
+
+  try {
+    const student = await Student.findOne({ email }).populate('enrolledCourses.courseId');
+
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    res.status(200).json(student.enrolledCourses);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
 // Enroll a student in a course
 export const enrollStudentInCourse = async (req: Request, res: Response) => {
   const { studentId, courseId } = req.body;
@@ -100,24 +117,24 @@ export const markCourseAsCompleted = async (req: Request, res: Response) => {
 
 // Like a course by a student
 export const likeCourse = async (req: Request, res: Response) => {
-    const { studentId, courseId } = req.body;
+  const { studentId, courseId } = req.body;
 
-    try {
-        const student = await Student.findById(studentId);
-        const course = await Course.findById(courseId);
+  try {
+    const student = await Student.findById(studentId);
+    const course = await Course.findById(courseId);
 
-        if (!student || !course) {
-            return res.status(404).json({ message: 'Student or Course not found' });
-        }
-
-        // Add course to likedCourses array if not already liked
-        if (!student.likedCourses.includes(courseId)) {
-            student.likedCourses.push(courseId);
-            await student.save();
-        }
-
-        res.status(200).json({ message: 'Course liked successfully', student });
-    } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
+    if (!student || !course) {
+      return res.status(404).json({ message: 'Student or Course not found' });
     }
+
+    // Add course to likedCourses array if not already liked
+    if (!student.likedCourses.includes(courseId)) {
+      student.likedCourses.push(courseId);
+      await student.save();
+    }
+
+    res.status(200).json({ message: 'Course liked successfully', student });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
 };

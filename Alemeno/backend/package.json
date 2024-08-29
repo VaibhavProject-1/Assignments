@@ -15,6 +15,7 @@
   },
   "scripts": {
     "start": "nodemon",
-    "seed": "ts-node src/seed.ts"
+    "seed": "ts-node src/seed.ts",
+    "seedStudents": "ts-node src/seedStudents.ts"
   }
 }
