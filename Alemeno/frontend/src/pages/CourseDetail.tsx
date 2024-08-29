@@ -63,7 +63,8 @@ const CourseDetails: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const course = useSelector((state: RootState) => state.courses.course);
   const [imageUrl, setImageUrl] = useState<string>('');
-  const studentId = useSelector((state: RootState) => state.auth.email); // Assuming student ID or email is stored in auth
+  const studentEmail = useSelector((state: RootState) => state.auth.email);
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   useEffect(() => {
     if (id) {
@@ -83,14 +84,14 @@ const CourseDetails: React.FC = () => {
   }, [course]);
 
   const handleLikeCourse = () => {
-    if (id && studentId) {
-      dispatch(likeCourse(id, studentId)); // Pass courseId and studentId
+    if (id && studentEmail) {
+      dispatch(likeCourse(id, studentEmail)); // Pass courseId and studentEmail
     }
   };
 
   const handleEnrollInCourse = () => {
-    if (id && studentId) {
-      dispatch(enrollStudentInCourse(id, studentId)); // Pass courseId and studentId
+    if (id && studentEmail) {
+      dispatch(enrollStudentInCourse(id, studentEmail)); // Pass courseId and studentEmail
     }
   };
 
@@ -132,35 +133,48 @@ const CourseDetails: React.FC = () => {
         <p className="font-semibold">Prerequisites:</p>
         <p className="text-gray-800">{course.prerequisites.join(', ')}</p>
       </div>
-      {/* Progress Bar */}
-      <div className="mb-6">
-        <p className="font-semibold mb-2">Progress:</p>
-        <ProgressBar progress={course.progress} />
-      </div>
-      {/* Syllabus */}
-      <div>
-        <h2 className="text-2xl font-bold mb-4">Syllabus</h2>
-        {course.syllabus.map((item, index) => (
-          <div key={index} className="mb-4">
-            <h3 className="text-xl font-semibold mb-1">Week {item.week}: {item.topic}</h3>
-            <p className="text-gray-800">{item.content}</p>
+
+      {/* Conditionally Render Progress Bar and Enrollment Details */}
+      {isAuthenticated && (
+        <>
+          <div className="mb-6">
+            <p className="font-semibold mb-2">Progress:</p>
+            <ProgressBar progress={course.progress} />
           </div>
-        ))}
-      </div>
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold mb-4">Syllabus</h2>
+            {course.syllabus.map((item, index) => (
+              <div key={index} className="mb-4">
+                <h3 className="text-xl font-semibold mb-1">
+                  Week {item.week}: {item.topic}
+                </h3>
+                <p className="text-gray-800">{item.content}</p>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
       {/* Buttons for Like and Enroll */}
       <div className="mt-6 flex space-x-4">
-        <button
-          onClick={handleLikeCourse}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-        >
-          Like Course
-        </button>
-        <button
-          onClick={handleEnrollInCourse}
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
-        >
-          Enroll in Course
-        </button>
+        {isAuthenticated ? (
+          <>
+            <button
+              onClick={handleLikeCourse}
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+            >
+              Like Course
+            </button>
+            <button
+              onClick={handleEnrollInCourse}
+              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+            >
+              Enroll in Course
+            </button>
+          </>
+        ) : (
+          <p className="text-red-500">Please log in to like or enroll in this course.</p>
+        )}
       </div>
     </div>
   );

@@ -13,12 +13,11 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const App: React.FC = () => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
-  const email = useSelector((state: RootState) => state.auth.email) || '';
 
   return (
     <Router>
       <Navbar />
-      <ToastContainer />
+      <ToastContainer autoClose={3000} position="top-right" />
       <div className="container mx-auto p-4">
         <Routes>
           <Route path="/" element={<CourseList />} />
@@ -27,8 +26,8 @@ const App: React.FC = () => {
           <Route
             path="/dashboard"
             element={
-              isAuthenticated && email ? (
-                <StudentDashboard email={email} />
+              isAuthenticated ? (
+                <StudentDashboard />
               ) : (
                 <Navigate to="/login" replace />
               )

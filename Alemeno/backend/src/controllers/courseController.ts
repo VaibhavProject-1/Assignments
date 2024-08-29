@@ -33,7 +33,6 @@ export const getCourses = async (req: Request, res: Response) => {
 };
 
 // Enroll a student in a course
-// Enroll a student in a course
 export const enrollStudentInCourse = async (req: Request, res: Response) => {
   const { studentEmail, courseId } = req.body;
   console.log("Received Payload: ", req.body);
@@ -52,42 +51,95 @@ export const enrollStudentInCourse = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Student or Course not found' });
     }
 
-    // Ensure enrolledCourses is an array
-    if (!Array.isArray(student.enrolledCourses)) {
-      student.enrolledCourses = [];
-    }
-
-    // Ensure course.students is an array
-    if (!Array.isArray(course.students)) {
-      course.students = [];
-    }
+    // Ensure enrolledCourses and students are arrays
+    student.enrolledCourses = student.enrolledCourses || [];
+    course.students = course.students || [];
 
     // Check if student is already enrolled in the course
     const enrolledCourse = student.enrolledCourses.find(ec => ec.courseId.toString() === courseId);
-    if (!enrolledCourse) {
-      student.enrolledCourses.push({
-        courseId: new Types.ObjectId(courseId),
-        progress: 0,
-        completed: false,
-      });
-      await student.save();
+    if (enrolledCourse) {
+      return res.status(400).json({ message: 'Student already enrolled in this course' });
     }
 
-    // Ensure student._id is converted to ObjectId
+    // Add course to student's enrolledCourses
+    student.enrolledCourses.push({
+      courseId: new mongoose.Types.ObjectId(courseId),
+      progress: 0,
+      completed: false,
+    });
+
+    // Add student to course's students list
     const studentId = student._id as Types.ObjectId;
+    course.students.push(studentId);
 
-    // Check if student is already in the course's student list
-    if (!course.students.includes(studentId)) {
-      course.students.push(studentId);
-      await course.save();
-    }
+    // Save updates
+    await student.save();
+    await course.save();
 
     res.status(200).json({ message: 'Enrollment successful', student, course });
   } catch (error) {
     console.error('Failed to enroll student in course:', error);
-    res.status(500).json({ message: 'Server error', error });
+
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    res.status(500).json({ message: 'Server error', error: errorMessage });
   }
 };
+
+// // Enroll a student in a course
+// export const enrollStudentInCourse = async (req: Request, res: Response) => {
+//   const { studentEmail, courseId } = req.body;
+//   console.log("Received Payload: ", req.body);
+
+//   try {
+//     // Validate courseId
+//     if (!Types.ObjectId.isValid(courseId)) {
+//       return res.status(400).json({ message: 'Invalid courseId' });
+//     }
+
+//     // Find student and course by their IDs
+//     const student = await Student.findOne({ email: studentEmail }).exec();
+//     const course = await Course.findById(courseId).exec();
+
+//     if (!student || !course) {
+//       return res.status(404).json({ message: 'Student or Course not found' });
+//     }
+
+//     // Ensure enrolledCourses is an array
+//     if (!Array.isArray(student.enrolledCourses)) {
+//       student.enrolledCourses = [];
+//     }
+
+//     // Ensure course.students is an array
+//     if (!Array.isArray(course.students)) {
+//       course.students = [];
+//     }
+
+//     // Check if student is already enrolled in the course
+//     const enrolledCourse = student.enrolledCourses.find(ec => ec.courseId.toString() === courseId);
+//     if (!enrolledCourse) {
+//       student.enrolledCourses.push({
+//         courseId: new mongoose.Types.ObjectId(courseId),
+//         progress: 0,
+//         completed: false,
+//       });
+//       await student.save();
+//     }
+
+//     // Ensure student._id is converted to ObjectId
+//     const studentId = student._id as Types.ObjectId;
+
+//     // Check if student is already in the course's student list
+//     if (!course.students.includes(studentId)) {
+//       course.students.push(studentId);
+//       await course.save();
+//     }
+
+//     res.status(200).json({ message: 'Enrollment successful', student, course });
+//   } catch (error) {
+//     console.error('Failed to enroll student in course:', error);
+//     res.status(500).json({ message: 'Server error', error });
+//   }
+// };
 
   // src/controllers/courseController.ts
 // export const likeCourse = async (req: Request, res: Response) => {
@@ -170,11 +222,6 @@ export const likeCourse = async (req: Request, res: Response) => {
     return res.status(500).json({ message: 'Server error', error: (error as Error).message });
   }
 };
-
-
-
-
-
 
 
 
