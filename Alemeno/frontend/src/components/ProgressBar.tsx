@@ -1,0 +1,30 @@
+// src/components/ProgressBar.tsx
+import React from 'react';
+
+interface ProgressBarProps {
+  progress: number; // Progress as a percentage
+}
+
+const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
+  return (
+    <div className="relative pt-1">
+      <div className="flex mb-2 items-center justify-between">
+        <div className="text-xs font-semibold inline-block py-1 px-2 rounded-full text-teal-600 bg-teal-200">
+          {progress}%
+        </div>
+      </div>
+      <div className="flex items-center">
+        <div className="w-full bg-gray-200 rounded-full">
+          <div
+            className="bg-teal-600 text-xs font-medium text-white text-center p-0.5 leading-none rounded-full"
+            style={{ width: `${progress}%` }}
+          >
+            &nbsp;
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProgressBar;
