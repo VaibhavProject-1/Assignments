@@ -38,11 +38,12 @@
 // src/components/CourseList.tsx
 
 
+// src/pages/CourseList.tsx
 import React, { useEffect, useState } from 'react';
 import { fetchCourses } from '../api/courseApi';
 import { fetchCourseImage } from '../services/unsplashService';
+import CourseCard from '../components/CourseCard';
 import { Course } from '../types/courseTypes';
-import { Link } from 'react-router-dom';
 
 const CourseList: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -105,21 +106,14 @@ const CourseList: React.FC = () => {
       <div className="course-cards grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredCourses.length > 0 ? (
           filteredCourses.map((course) => (
-            <Link key={course._id} to={`/course/${course._id}`} className="course-card transform hover:scale-105 transition-transform duration-300 bg-white shadow-lg rounded-lg overflow-hidden">
-              <img
-                src={course.imageUrl || 'https://via.placeholder.com/300x200?text=No+Image'}
-                alt={course.name}
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-4">
-                <h2 className="text-lg font-bold text-gray-900 mb-2">{course.name}</h2>
-                <p className="text-sm text-gray-600 mb-2">Instructor: {course.instructor}</p>
-                <p className="text-gray-700 line-clamp-3">{course.description}</p>
-              </div>
-              <div className="bg-gray-100 p-4">
-                <button className="text-blue-500 font-semibold hover:text-blue-600">View Details</button>
-              </div>
-            </Link>
+            <CourseCard
+              key={course._id}
+              courseId={course._id}
+              name={course.name}
+              instructor={course.instructor}
+              imageUrl={course.imageUrl}
+              description={course.description}
+            />
           ))
         ) : (
           <p>No courses found.</p>

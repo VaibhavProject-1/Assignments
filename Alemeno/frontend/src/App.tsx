@@ -13,8 +13,10 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const App: React.FC = () => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const darkMode = useSelector((state: RootState) => state.theme.darkMode);
 
   return (
+    <div className={darkMode ? 'bg-gray-900 text-white min-h-screen' : 'bg-white text-black min-h-screen'}>
     <Router>
       <Navbar />
       <ToastContainer autoClose={3000} position="top-right" />
@@ -36,6 +38,7 @@ const App: React.FC = () => {
         </Routes>
       </div>
     </Router>
+    </div>
   );
 };
 

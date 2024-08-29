@@ -49,7 +49,6 @@
 
 
 
-// src/components/CourseDetail.tsx
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCourseById, likeCourse, enrollStudentInCourse } from '../redux/actions/courseActions';
@@ -65,11 +64,18 @@ const CourseDetails: React.FC = () => {
   const [imageUrl, setImageUrl] = useState<string>('');
   const studentEmail = useSelector((state: RootState) => state.auth.email);
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const enrolledCourses = useSelector((state: RootState) => state.auth.enrolledCourses);
+
+  const [enrollmentData, setEnrollmentData] = useState<{ progress: number; completed: boolean } | null>(null);
 
   useEffect(() => {
-    if (id) {
-      dispatch(fetchCourseById(id));
-    }
+    const fetchData = async () => {
+      if (id) {
+        await dispatch(fetchCourseById(id)); // Await the dispatch if it's an async thunk
+      }
+    };
+
+    fetchData();
   }, [id, dispatch]);
 
   useEffect(() => {
@@ -82,6 +88,18 @@ const CourseDetails: React.FC = () => {
 
     getImageUrl();
   }, [course]);
+
+  useEffect(() => {
+    if (id && enrolledCourses.length > 0) {
+      const matchingCourse = enrolledCourses.find((enrolledCourse) => enrolledCourse.courseId === id);
+      if (matchingCourse) {
+        setEnrollmentData({
+          progress: matchingCourse.progress,
+          completed: matchingCourse.completed,
+        });
+      }
+    }
+  }, [id, enrolledCourses]);
 
   const handleLikeCourse = () => {
     if (id && studentEmail) {
@@ -135,11 +153,15 @@ const CourseDetails: React.FC = () => {
       </div>
 
       {/* Conditionally Render Progress Bar and Enrollment Details */}
-      {isAuthenticated && (
+      {isAuthenticated && enrollmentData && (
         <>
           <div className="mb-6">
             <p className="font-semibold mb-2">Progress:</p>
-            <ProgressBar progress={course.progress} />
+            <ProgressBar progress={enrollmentData.progress} />
+          </div>
+          <div className="mb-6">
+            <p className="font-semibold mb-2">Completed:</p>
+            <p className="text-gray-800">{enrollmentData.completed ? 'Yes' : 'No'}</p>
           </div>
           <div className="mb-6">
             <h2 className="text-2xl font-bold mb-4">Syllabus</h2>

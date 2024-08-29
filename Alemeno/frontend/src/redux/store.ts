@@ -56,11 +56,13 @@ import storage from 'redux-persist/lib/storage';
 import courseReducer from './reducers/courseReducer';
 import studentReducer from './reducers/studentReducer';
 import authReducer from './authSlice';
+import themeReducer from './themeSlice';
 
 const rootReducer = combineReducers({
   courses: courseReducer,
   student: studentReducer,
   auth: authReducer,
+  theme: themeReducer, 
 });
 
 const persistConfig = {
