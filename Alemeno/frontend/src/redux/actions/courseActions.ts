@@ -2,6 +2,8 @@
 import { Dispatch } from 'redux';
 import { ThunkAction } from 'redux-thunk';
 import { RootState } from '../store';
+import axios from 'axios';
+import { AppDispatch } from '../store';
 import {
   COURSE_ACTION_TYPES,
   
@@ -46,3 +48,31 @@ export const fetchCourseById = (id: string): ThunkAction<void, RootState, unknow
     }
   };
 };
+
+
+export const likeCourse = (courseId: string, studentEmail: string) => async (dispatch: AppDispatch) => {
+  try {
+    console.log("Course ID: ", courseId);
+    console.log("Student Email: ", studentEmail);
+    await axios.post(`${process.env.REACT_APP_API_URL}/courses/${courseId}/like`, { courseId, studentEmail });
+    dispatch({ type: 'COURSE_LIKED', payload: { courseId } });
+  } catch (error) {
+    console.error('Failed to like course', error);
+  }
+};
+
+
+
+
+export const enrollStudentInCourse = ( courseId: string,studentEmail: string,) => async (dispatch: AppDispatch) => {
+  try {
+    console.log("Course ID: ", courseId);
+    console.log("Student email: ", studentEmail);
+    await axios.post(`${process.env.REACT_APP_API_URL}/courses/${courseId}/enroll`, { studentEmail, courseId });
+    dispatch({ type: 'COURSE_ENROLLED', payload: { studentEmail, courseId } });
+  } catch (error) {
+    console.error('Failed to enroll in course:', error);
+  }
+};
+
+

@@ -48,10 +48,11 @@
 // export default CourseDetail;
 
 
-// src/pages/CourseDetails.tsx
+
+// src/components/CourseDetail.tsx
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCourseById } from '../redux/actions/courseActions';
+import { fetchCourseById, likeCourse, enrollStudentInCourse } from '../redux/actions/courseActions';
 import { RootState, AppDispatch } from '../redux/store';
 import { useParams } from 'react-router-dom';
 import { fetchCourseImage } from '../services/unsplashService';
@@ -62,6 +63,7 @@ const CourseDetails: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const course = useSelector((state: RootState) => state.courses.course);
   const [imageUrl, setImageUrl] = useState<string>('');
+  const studentId = useSelector((state: RootState) => state.auth.email); // Assuming student ID or email is stored in auth
 
   useEffect(() => {
     if (id) {
@@ -80,6 +82,18 @@ const CourseDetails: React.FC = () => {
     getImageUrl();
   }, [course]);
 
+  const handleLikeCourse = () => {
+    if (id && studentId) {
+      dispatch(likeCourse(id, studentId)); // Pass courseId and studentId
+    }
+  };
+
+  const handleEnrollInCourse = () => {
+    if (id && studentId) {
+      dispatch(enrollStudentInCourse(id, studentId)); // Pass courseId and studentId
+    }
+  };
+
   if (!course) {
     return <div className="text-center text-lg font-semibold">Loading...</div>;
   }
@@ -96,7 +110,7 @@ const CourseDetails: React.FC = () => {
       </div>
       {/* Course Information */}
       <h1 className="text-3xl font-bold mb-4">{course.name}</h1>
-      <p className="text-lg font-semibold text-gray-700 mb-2">{course.instructor}</p>
+      <p className="text-lg font-semibold text-gray-700 mb-2">Instructor: {course.instructor}</p>
       <p className="text-gray-800 mb-4">{course.description}</p>
       <div className="mb-4">
         <p className="font-semibold">Enrollment Status:</p>
@@ -132,6 +146,21 @@ const CourseDetails: React.FC = () => {
             <p className="text-gray-800">{item.content}</p>
           </div>
         ))}
+      </div>
+      {/* Buttons for Like and Enroll */}
+      <div className="mt-6 flex space-x-4">
+        <button
+          onClick={handleLikeCourse}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+        >
+          Like Course
+        </button>
+        <button
+          onClick={handleEnrollInCourse}
+          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+        >
+          Enroll in Course
+        </button>
       </div>
     </div>
   );

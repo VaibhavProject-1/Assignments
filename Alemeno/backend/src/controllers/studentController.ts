@@ -2,6 +2,7 @@
 import { Request, Response } from 'express';
 import Student, { IStudent } from '../models/studentModel';
 import Course from '../models/courseModel';
+import mongoose from 'mongoose';
 
 // Register or login a student
 export const registerStudent = async (req: Request, res: Response) => {
@@ -56,6 +57,11 @@ export const getStudentEnrolledCoursesByEmail = async (req: Request, res: Respon
 export const enrollStudentInCourse = async (req: Request, res: Response) => {
   const { studentId, courseId } = req.body;
 
+  // Validate that the IDs are valid ObjectIds
+  if (!mongoose.Types.ObjectId.isValid(studentId) || !mongoose.Types.ObjectId.isValid(courseId)) {
+    return res.status(400).json({ message: 'Invalid studentId or courseId' });
+  }
+
   try {
     const student = await Student.findById(studentId);
     const course = await Course.findById(courseId);
@@ -64,9 +70,10 @@ export const enrollStudentInCourse = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Student or Course not found' });
     }
 
-    // Check and update enrolledCourses in Student
-    const enrolledCourse = student.enrolledCourses.find((ec) => ec.courseId.toString() === courseId);
+    // Check if the student is already enrolled in the course
+    const enrolledCourse = student.enrolledCourses.find((ec) => ec.courseId.equals(courseId));
     if (!enrolledCourse) {
+      // If not, enroll the student in the course
       student.enrolledCourses.push({
         courseId,
         progress: 0,
@@ -75,7 +82,7 @@ export const enrollStudentInCourse = async (req: Request, res: Response) => {
       await student.save();
     }
 
-    // Update students in Course
+    // Check if the course already has the student enrolled
     if (!course.students.includes(studentId)) {
       course.students.push(studentId);
       await course.save();
@@ -83,9 +90,11 @@ export const enrollStudentInCourse = async (req: Request, res: Response) => {
 
     res.status(200).json({ message: 'Enrollment successful', student, course });
   } catch (error) {
+    console.error('Error enrolling student:', error); // Log error for debugging
     res.status(500).json({ message: 'Server error', error });
   }
 };
+
 
 // Mark a course as completed
 export const markCourseAsCompleted = async (req: Request, res: Response) => {

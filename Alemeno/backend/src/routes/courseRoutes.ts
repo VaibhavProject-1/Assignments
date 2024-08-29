@@ -11,7 +11,7 @@ const router = Router();
 
 router.get('/', getCourses);
 router.get('/:id', getCourseById);
-router.post('/enroll', enrollStudentInCourse);
-router.post('/like', likeCourse);
+router.post('/:courseId/enroll', enrollStudentInCourse);
+router.post('/:courseId/like', likeCourse);
 
 export default router;

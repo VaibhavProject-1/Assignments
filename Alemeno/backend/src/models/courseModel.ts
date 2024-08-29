@@ -18,8 +18,8 @@ export interface ICourse extends Document {
   location: string;
   prerequisites: string[];
   syllabus: ISyllabusItem[];
-  students: Types.ObjectId[]; // Reference to Student model
-  likedBy: Types.ObjectId[];
+  students: mongoose.Types.ObjectId[]; // Reference to Student model
+  likedBy: mongoose.Types.ObjectId[];
 }
 
 const SyllabusItemSchema: Schema = new Schema({
@@ -28,7 +28,7 @@ const SyllabusItemSchema: Schema = new Schema({
   content: String,
 });
 
-const CourseSchema: Schema = new Schema({
+const CourseSchema: Schema<ICourse>  = new Schema({
   name: { type: String, required: true },
   instructor: { type: String, required: true },
   description: { type: String, required: true },
@@ -38,9 +38,9 @@ const CourseSchema: Schema = new Schema({
   schedule: { type: String, required: true },
   location: { type: String, required: true },
   prerequisites: { type: [String], required: true },
+  likedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student', default: [] }],
   syllabus: { type: [SyllabusItemSchema], required: true },
-  students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student' }],
-  likedBy: { type: [Types.ObjectId], ref: 'Student' },
+  students: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Student', default: [] }],
 });
 
 export default mongoose.model<ICourse>('Course', CourseSchema);
