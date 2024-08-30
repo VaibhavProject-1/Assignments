@@ -117,6 +117,9 @@ const authSlice = createSlice({
       state.enrolledCourses = [];
       state.likedCourses = [];
     },
+    updateEnrolledCourses: (state, action: PayloadAction<EnrolledCourse[]>) => {
+      state.enrolledCourses = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchStudentData.fulfilled, (state, action) => {
@@ -131,5 +134,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, updateEnrolledCourses  } = authSlice.actions;
 export default authSlice.reducer;

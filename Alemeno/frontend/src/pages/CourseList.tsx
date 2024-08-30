@@ -158,6 +158,7 @@ const CourseList: React.FC = () => {
               instructor={course.instructor}
               imageUrl={course.imageUrl}
               description={course.description}
+              likeCount={course.likedBy?.length || 0} // Ensure likeCount is always provided
             />
           ))
         ) : (

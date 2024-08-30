@@ -51,27 +51,28 @@
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCourseById, likeCourse, enrollStudentInCourse } from '../redux/actions/courseActions';
+import { fetchCourseById, likeCourse, enrollStudentInCourse, markCourseCompleted } from '../redux/actions/courseActions';
 import { RootState, AppDispatch } from '../redux/store';
 import { useParams } from 'react-router-dom';
 import { fetchCourseImage } from '../services/unsplashService';
 import ProgressBar from '../components/ProgressBar';
-import Spinner from '../components/Spinner'; // Import the Spinner component
+import Spinner from '../components/Spinner';
 import { SyllabusItem, Course } from '../types/courseTypes';
 
 const CourseDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch: AppDispatch = useDispatch();
-  
+
   const course: Course | null = useSelector((state: RootState) => state.courses?.course || null);
   const studentEmail = useSelector((state: RootState) => state.auth?.email || '');
   const isAuthenticated = useSelector((state: RootState) => state.auth?.isAuthenticated || false);
   const enrolledCourses = useSelector((state: RootState) => state.auth?.enrolledCourses || []);
   const darkMode = useSelector((state: RootState) => state.theme?.darkMode || false);
-  const loading = useSelector((state: RootState) => state.courses?.loading || false); // Add loading state
+  const loading = useSelector((state: RootState) => state.courses?.loading || false);
 
   const [imageUrl, setImageUrl] = useState<string>('');
   const [enrollmentData, setEnrollmentData] = useState<{ progress: number; completed: boolean } | null>(null);
+  const [expandedItems, setExpandedItems] = useState<number[]>([]); // State to track expanded syllabus items
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,8 +82,6 @@ const CourseDetails: React.FC = () => {
     };
     fetchData();
   }, [id, dispatch]);
-
-  
 
   useEffect(() => {
     const getImageUrl = async () => {
@@ -106,6 +105,8 @@ const CourseDetails: React.FC = () => {
     }
   }, [id, enrolledCourses]);
 
+  
+
   const handleLikeCourse = () => {
     if (id && studentEmail) {
       dispatch(likeCourse(id, studentEmail));
@@ -118,8 +119,43 @@ const CourseDetails: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (id && enrolledCourses.length > 0) {
+      const matchingCourse = enrolledCourses.find((enrolledCourse) => enrolledCourse.courseId === id);
+      console.log("Matching Course on load:", matchingCourse); // Log to confirm correct data
+      if (matchingCourse) {
+        setEnrollmentData({
+          progress: matchingCourse.progress,
+          completed: matchingCourse.completed,
+        });
+      }
+    }
+  }, [id, enrolledCourses]);
+  
+
+const handleCompleteCourse = async () => {
+  if (id && studentEmail) {
+      await dispatch(markCourseCompleted(id, studentEmail));
+      
+      // Update the local state after dispatching the action
+      setEnrollmentData({ progress: 100, completed: true });
+      
+      // This log will happen immediately after setEnrollmentData, but before React updates the state
+      console.log('Setting Enrollment Data Progress to 100');
+  }
+};
+
+
+  const toggleItemExpansion = (index: number) => {
+    setExpandedItems(prevExpandedItems =>
+      prevExpandedItems.includes(index)
+        ? prevExpandedItems.filter(item => item !== index)
+        : [...prevExpandedItems, index]
+    );
+  };
+
   if (loading || !course) {
-    return <Spinner />; // Use the spinner component instead of loading text
+    return <Spinner />;
   }
 
   return (
@@ -164,20 +200,25 @@ const CourseDetails: React.FC = () => {
         <p className={darkMode ? 'text-gray-300' : 'text-gray-800'}>{course.prerequisites.join(', ')}</p>
       </div>
 
-      {/* Syllabus (Always visible) */}
+      {/* Syllabus */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold mb-4">Syllabus</h2>
         {course.syllabus.map((item: SyllabusItem, index: number) => (
           <div key={index} className="mb-4">
-            <h3 className="text-xl font-semibold mb-1">
-              Week {item.week}: {item.topic}
+            <h3
+              className="text-xl font-semibold mb-1 cursor-pointer"
+              onClick={() => toggleItemExpansion(index)}
+            >
+              Week {item.week}: {item.topic} {expandedItems.includes(index) ? '▲' : '▼'}
             </h3>
-            <p className={darkMode ? 'text-gray-300' : 'text-gray-800'}>{item.content}</p>
+            {expandedItems.includes(index) && (
+              <p className={darkMode ? 'text-gray-300' : 'text-gray-800'}>{item.content}</p>
+            )}
           </div>
         ))}
       </div>
 
-      {/* Conditionally Render Progress Bar and Enrollment Details */}
+      {/* Progress and Completion */}
       {isAuthenticated && enrollmentData && (
         <>
           <div className="mb-6">
@@ -191,7 +232,7 @@ const CourseDetails: React.FC = () => {
         </>
       )}
 
-      {/* Buttons for Like and Enroll */}
+      {/* Buttons for Like, Enroll, and Complete */}
       <div className="mt-6 flex space-x-4">
         {isAuthenticated ? (
           <>
@@ -215,9 +256,19 @@ const CourseDetails: React.FC = () => {
             >
               Enroll in Course
             </button>
+            <button
+              onClick={handleCompleteCourse}
+              className={`px-4 py-2 rounded hover:transition ${
+                darkMode
+                  ? 'bg-purple-700 text-white hover:bg-purple-800'
+                  : 'bg-purple-500 text-white hover:bg-purple-600'
+              }`}
+            >
+              Mark as Completed
+            </button>
           </>
         ) : (
-          <p className="text-red-500">Please log in to like or enroll in this course.</p>
+          <p className="text-red-500">Please log in to interact with this course.</p>
         )}
       </div>
     </div>

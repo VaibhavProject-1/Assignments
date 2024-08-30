@@ -122,6 +122,10 @@ interface Course {
   location?: string;
   schedule?: string;
   imageUrl?: string;
+  likeCount: number; 
+  progress?: number; 
+  completed?: boolean;
+  likedBy: string[];
 }
 
 
@@ -194,6 +198,7 @@ const StudentDashboard: React.FC = () => {
               description={course.description}
               progress={enrolledCourses[index].progress}
               completed={enrolledCourses[index].completed}
+              likeCount={course.likedBy.length} // Pass the like count to the CourseCard
             />
           ))}
         </div>
@@ -212,6 +217,7 @@ const StudentDashboard: React.FC = () => {
               instructor={course.instructor}
               imageUrl={course.imageUrl}
               description={course.description}
+              likeCount={course.likedBy.length} // Pass the like count to the CourseCard
             />
           ))}
         </div>

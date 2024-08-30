@@ -1,4 +1,3 @@
-// src/components/CourseCard.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -8,46 +7,43 @@ interface CourseCardProps {
   courseId: string;
   name: string;
   instructor: string;
+  description: string;
   imageUrl?: string;
-  description?: string;
-  progress?: number; // Optional for enrolled courses
-  completed?: boolean; // Optional for enrolled courses
+  progress?: number;
+  completed?: boolean;
+  likeCount?: number;
 }
 
-const CourseCard: React.FC<CourseCardProps> = ({
-  courseId,
-  name,
-  instructor,
-  imageUrl,
-  description,
-  progress,
-  completed,
-}) => {
-  const darkMode = useSelector((state: RootState) => state.theme.darkMode); // Access the dark mode state
+const CourseCard: React.FC<CourseCardProps> = ({ courseId, name, instructor, description, imageUrl, progress, completed, likeCount }) => {
+  const darkMode = useSelector((state: RootState) => state.theme?.darkMode || false);
 
   return (
-    <Link
-      to={`/course/${courseId}`}
-      className={`course-card transform hover:scale-105 transition-transform duration-300 shadow-lg rounded-lg overflow-hidden ${
-        darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'
-      }`}
-    >
-      <img
-        src={imageUrl || 'https://via.placeholder.com/300x200?text=No+Image'}
-        alt={name}
-        className="w-full h-40 object-cover"
-      />
-      <div className="p-4">
-        <h2 className={`text-lg font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-900'}`}>{name}</h2>
-        <p className={`text-sm mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Instructor: {instructor}</p>
-        {description && <p className={`${darkMode ? 'text-gray-300' : 'text-gray-700'} line-clamp-3`}>{description}</p>}
-      </div>
-      {(progress !== undefined || completed !== undefined) && (
-        <div className={`p-4 ${darkMode ? 'bg-gray-700' : 'bg-gray-100'}`}>
-          {progress !== undefined && <p className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Progress: {progress}%</p>}
-          {completed !== undefined && <p className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>Completed: {completed ? 'Yes' : 'No'}</p>}
+    <Link to={`/course/${courseId}`} className="block">
+      <div
+        className={`course-card shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105 hover:shadow-xl cursor-pointer ${
+          darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
+        }`}
+      >
+        <img
+          src={imageUrl || 'https://via.placeholder.com/150'}
+          alt={name}
+          className="w-full h-48 object-cover"
+        />
+        <div className="p-6">
+          <h2 className="text-2xl font-bold mb-2">{name}</h2>
+          <p className="font-medium mb-4">{instructor}</p>
+          <p className="mb-4 line-clamp-3">{description}</p>
+          {progress !== undefined && (
+            <p className="font-semibold mb-2 text-teal-600">Progress: {progress}%</p>
+          )}
+          {completed !== undefined && (
+            <p className="font-semibold mb-2 text-green-600">Completed: {completed ? 'Yes' : 'No'}</p>
+          )}
+          {likeCount !== undefined && (
+            <p className="font-semibold mb-2 text-yellow-600">Likes: {likeCount}</p>
+          )}
         </div>
-      )}
+      </div>
     </Link>
   );
 };

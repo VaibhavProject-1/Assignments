@@ -5,6 +5,7 @@ import { RootState } from '../store';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { AppDispatch } from '../store';
+import { updateEnrolledCourses } from '../authSlice';
 import {
   COURSE_ACTION_TYPES,
   
@@ -57,14 +58,32 @@ export const fetchCourseById = (id: string): ThunkAction<void, RootState, unknow
 
 
 
-export const markCourseCompleted = (courseId: string, studentEmail: string) => async (dispatch: AppDispatch) => {
+export const markCourseCompleted = (courseId: string, studentEmail: string) => async (dispatch: AppDispatch, getState: () => RootState) => {
   try {
     await axios.post(`${process.env.REACT_APP_API_URL}/courses/${courseId}/complete`, { studentEmail });
+    
+    // Get the current state
+    const { auth } = getState();
+
+    // Update the enrolledCourses array with the new progress
+    const updatedEnrolledCourses = auth.enrolledCourses.map(course =>
+      course.courseId === courseId ? { ...course, progress: 100, completed: true } : course
+    );
+
+    // Dispatch the action to update the Redux store
+    dispatch(updateEnrolledCourses(updatedEnrolledCourses));
+
+    // Dispatch the action to update the course's state in the UI
     dispatch({ type: COURSE_ACTION_TYPES.MARK_COURSE_COMPLETED, payload: { courseId } });
+
+    toast.success('Course marked as completed!');
   } catch (error) {
     console.error('Failed to complete course', error);
+    toast.error('Failed to complete course.');
   }
 };
+
+
 
 export const likeCourse = (courseId: string, studentEmail: string) => async (dispatch: AppDispatch) => {
   try {

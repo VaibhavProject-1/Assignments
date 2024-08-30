@@ -23,6 +23,7 @@ export interface Course {
     dueDate: string;
     progress: number;
     completed: boolean;
+    likedBy: string[]; 
   }
   
   export interface CourseState {
@@ -40,6 +41,7 @@ export interface Course {
     FETCH_COURSE_BY_ID_SUCCESS = 'FETCH_COURSE_BY_ID_SUCCESS',
     FETCH_COURSE_BY_ID_FAILURE = 'FETCH_COURSE_BY_ID_FAILURE',
     MARK_COURSE_COMPLETED = 'MARK_COURSE_COMPLETED',
+    UPDATE_ENROLLED_COURSES = 'UPDATE_ENROLLED_COURSES',
     
   }
   
@@ -47,6 +49,13 @@ export interface Course {
     type: COURSE_ACTION_TYPES.FETCH_COURSES_REQUEST;
   }
   
+
+  export const updateEnrolledCourses = (enrolledCourses: any[]) => ({
+    type: COURSE_ACTION_TYPES.UPDATE_ENROLLED_COURSES,
+    payload: enrolledCourses,
+  });
+  
+
   export interface FetchCoursesSuccessAction {
     type: COURSE_ACTION_TYPES.FETCH_COURSES_SUCCESS;
     payload: Course[];
