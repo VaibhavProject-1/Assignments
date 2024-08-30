@@ -37,7 +37,8 @@ import {
               },
             };
           }
-          return state;  
+          return state;
+        
       default:
         return state;
     }

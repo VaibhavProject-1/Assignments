@@ -93,6 +93,7 @@ import { fetchCourseImage } from '../services/unsplashService';
 import CourseCard from '../components/CourseCard';
 import SearchBar from '../components/SearchBar';
 import { Course } from '../types/courseTypes';
+import Spinner from '../components/Spinner';
 
 const CourseList: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -133,7 +134,7 @@ const CourseList: React.FC = () => {
     setFilteredCourses(filtered);
   }, [searchQuery, courses]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Spinner/>;
   if (error) return <p>{error}</p>;
 
   return (
