@@ -1,3 +1,4 @@
+// src/redux/themeSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface ThemeState {

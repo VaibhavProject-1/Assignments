@@ -48,7 +48,7 @@
 // export default CourseDetail;
 
 
-
+// src/components/CourseDetail.tsx
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCourseById, likeCourse, enrollStudentInCourse, markCourseCompleted } from '../redux/actions/courseActions';
