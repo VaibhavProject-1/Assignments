@@ -22,8 +22,3 @@ export const fetchCourses = async (): Promise<Course[]> => {
     const response = await axios.get(`${API_URL}/${id}`);
     return response.data;
   };
-
-// export const fetchEnrolledCourses = async (studentId: string) => {
-//     const response = await axios.get(`${API_URL}/${studentId}/courses`);
-//     return response.data;
-//   };

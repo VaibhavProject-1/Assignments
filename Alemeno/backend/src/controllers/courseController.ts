@@ -23,6 +23,7 @@ export const getStudentCourses = async (req: Request, res: Response) => {
   };
   
 
+  //Fetching all courses
 export const getCourses = async (req: Request, res: Response) => {
   try {
     const courses = await Course.find();
@@ -35,7 +36,7 @@ export const getCourses = async (req: Request, res: Response) => {
 // Enroll a student in a course
 export const enrollStudentInCourse = async (req: Request, res: Response) => {
   const { studentEmail, courseId } = req.body;
-  console.log("Received Payload: ", req.body);
+  //console.log("Received Payload: ", req.body);
 
   try {
     // Validate courseId
@@ -85,86 +86,10 @@ export const enrollStudentInCourse = async (req: Request, res: Response) => {
   }
 };
 
-// // Enroll a student in a course
-// export const enrollStudentInCourse = async (req: Request, res: Response) => {
-//   const { studentEmail, courseId } = req.body;
-//   console.log("Received Payload: ", req.body);
-
-//   try {
-//     // Validate courseId
-//     if (!Types.ObjectId.isValid(courseId)) {
-//       return res.status(400).json({ message: 'Invalid courseId' });
-//     }
-
-//     // Find student and course by their IDs
-//     const student = await Student.findOne({ email: studentEmail }).exec();
-//     const course = await Course.findById(courseId).exec();
-
-//     if (!student || !course) {
-//       return res.status(404).json({ message: 'Student or Course not found' });
-//     }
-
-//     // Ensure enrolledCourses is an array
-//     if (!Array.isArray(student.enrolledCourses)) {
-//       student.enrolledCourses = [];
-//     }
-
-//     // Ensure course.students is an array
-//     if (!Array.isArray(course.students)) {
-//       course.students = [];
-//     }
-
-//     // Check if student is already enrolled in the course
-//     const enrolledCourse = student.enrolledCourses.find(ec => ec.courseId.toString() === courseId);
-//     if (!enrolledCourse) {
-//       student.enrolledCourses.push({
-//         courseId: new mongoose.Types.ObjectId(courseId),
-//         progress: 0,
-//         completed: false,
-//       });
-//       await student.save();
-//     }
-
-//     // Ensure student._id is converted to ObjectId
-//     const studentId = student._id as Types.ObjectId;
-
-//     // Check if student is already in the course's student list
-//     if (!course.students.includes(studentId)) {
-//       course.students.push(studentId);
-//       await course.save();
-//     }
-
-//     res.status(200).json({ message: 'Enrollment successful', student, course });
-//   } catch (error) {
-//     console.error('Failed to enroll student in course:', error);
-//     res.status(500).json({ message: 'Server error', error });
-//   }
-// };
-
-  // src/controllers/courseController.ts
-// export const likeCourse = async (req: Request, res: Response) => {
-//     const { studentId, courseId } = req.body;
-  
-//     try {
-//       const course = await Course.findById(courseId);
-//       if (!course) {
-//         return res.status(404).json({ message: 'Course not found' });
-//       }
-  
-//       // Add student to likedBy array if not already liked
-//       if (!course.likedBy.includes(studentId)) {
-//         course.likedBy.push(studentId);
-//         await course.save();
-//       }
-  
-//       res.status(200).json({ message: 'Course liked', course });
-//     } catch (error) {
-//       res.status(500).json({ message: 'Server error', error });
-//     }
-//   };
+// Enroll a student in a course
 export const likeCourse = async (req: Request, res: Response) => {
   const { courseId, studentEmail } = req.body;
-  console.log('Received Payload for like:', req.body);
+  //console.log('Received Payload for like:', req.body);
 
   if (!mongoose.Types.ObjectId.isValid(courseId)) {
     return res.status(400).json({ message: 'Invalid courseId' });
@@ -184,37 +109,37 @@ export const likeCourse = async (req: Request, res: Response) => {
 
     // Initialize the students array if it's undefined
     if (!Array.isArray(course.students)) {
-      console.log("Initializing 'students' array");
+      //console.log("Initializing 'students' array");
       course.students = [];
     } else {
       // Sanitize the students array
       course.students = course.students.filter(id => mongoose.Types.ObjectId.isValid(id as any));
     }
-    console.log('Sanitized students array:', course.students);
+    //console.log('Sanitized students array:', course.students);
 
     // Check if likedBy is undefined or contains any undefined values, and initialize if necessary
     if (!Array.isArray(course.likedBy) || course.likedBy.some(id => id === undefined)) {
-      console.log("Initializing 'likedBy' array");
+      //console.log("Initializing 'likedBy' array");
       course.likedBy = [];
     } else {
       // Filter out any undefined values if they exist
       course.likedBy = course.likedBy.filter(id => id !== undefined);
     }
 
-    console.log('Initial likedBy:', course.likedBy);
+    //console.log('Initial likedBy:', course.likedBy);
 
     // Transform any non-ObjectId items in the likedBy array
     course.likedBy = course.likedBy.map(id => (id instanceof mongoose.Types.ObjectId ? id : new mongoose.Types.ObjectId(id)));
-    console.log('Transformed likedBy:', course.likedBy);
+    //console.log('Transformed likedBy:', course.likedBy);
 
     // Check if student already liked the course
     if (!course.likedBy.includes(studentId)) {
       course.likedBy.push(studentId);
       await course.save();
-      console.log('Course liked successfully');
+      //console.log('Course liked successfully');
       return res.status(200).json({ message: 'Course liked successfully' });
     } else {
-      console.log('Student already liked the course');
+      //console.log('Student already liked the course');
       return res.status(400).json({ message: 'Course already liked' });
     }
   } catch (error) {
@@ -223,6 +148,8 @@ export const likeCourse = async (req: Request, res: Response) => {
   }
 };
 
+
+//Marking a course as complete
 export const completeCourse = async (req: Request, res: Response) => {
   const { studentEmail } = req.body;
   const { courseId } = req.params;
@@ -253,6 +180,7 @@ export const completeCourse = async (req: Request, res: Response) => {
 
 
 
+//Fetch a specific course
 export const getCourseById = async (req: Request, res: Response) => {
   try {
     const course = await Course.findById(req.params.id);

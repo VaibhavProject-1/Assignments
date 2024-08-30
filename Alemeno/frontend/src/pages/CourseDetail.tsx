@@ -1,53 +1,3 @@
-// // src/components/CourseDetail.tsx
-// import React, { useEffect, useState } from 'react';
-// import { useParams } from 'react-router-dom';
-// import { fetchCourseById } from '../redux/courseSlice';
-// import { useSelector, useDispatch } from 'react-redux';
-// import { RootState } from '../redux/store';
-
-// const CourseDetail: React.FC = () => {
-//   const { id } = useParams();
-//   const dispatch = useDispatch();
-//   const course = useSelector((state: RootState) => state.courses.selectedCourse);
-//   const [expanded, setExpanded] = useState(false);
-
-//   useEffect(() => {
-//     if (id) {
-//       dispatch(fetchCourseById(id));
-//     }
-//   }, [id, dispatch]);
-
-//   if (!course) return <div>Loading...</div>;
-
-//   return (
-//     <div>
-//       <h1>{course.name}</h1>
-//       <h2>Instructor: {course.instructor}</h2>
-//       <p>{course.description}</p>
-//       <p>Status: {course.enrollmentStatus}</p>
-//       <p>Duration: {course.duration}</p>
-//       <p>Schedule: {course.schedule}</p>
-//       <p>Location: {course.location}</p>
-//       <p>Prerequisites: {course.prerequisites.join(', ')}</p>
-//       <button onClick={() => setExpanded(!expanded)}>
-//         {expanded ? 'Hide Syllabus' : 'Show Syllabus'}
-//       </button>
-//       {expanded && (
-//         <ul>
-//           {course.syllabus.map((item, index) => (
-//             <li key={index}>
-//               Week {item.week}: {item.topic} - {item.content}
-//             </li>
-//           ))}
-//         </ul>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default CourseDetail;
-
-
 // src/components/CourseDetail.tsx
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -122,7 +72,7 @@ const CourseDetails: React.FC = () => {
   useEffect(() => {
     if (id && enrolledCourses.length > 0) {
       const matchingCourse = enrolledCourses.find((enrolledCourse) => enrolledCourse.courseId === id);
-      console.log("Matching Course on load:", matchingCourse); // Log to confirm correct data
+      
       if (matchingCourse) {
         setEnrollmentData({
           progress: matchingCourse.progress,
@@ -140,8 +90,6 @@ const handleCompleteCourse = async () => {
       // Update the local state after dispatching the action
       setEnrollmentData({ progress: 100, completed: true });
       
-      // This log will happen immediately after setEnrollmentData, but before React updates the state
-      console.log('Setting Enrollment Data Progress to 100');
   }
 };
 

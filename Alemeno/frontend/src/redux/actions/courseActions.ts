@@ -39,7 +39,7 @@ export const fetchCourseById = (id: string): ThunkAction<void, RootState, unknow
       dispatch({ type: COURSE_ACTION_TYPES.FETCH_COURSE_BY_ID_REQUEST });
       try {
           const course = await fetchCourseByIdApi(id);
-          console.log("Dispatching FETCH_COURSE_BY_ID_SUCCESS with payload:", course);
+          
           dispatch({
               type: COURSE_ACTION_TYPES.FETCH_COURSE_BY_ID_SUCCESS,
               payload: course,
@@ -79,7 +79,17 @@ export const markCourseCompleted = (courseId: string, studentEmail: string) => a
     toast.success('Course marked as completed!');
   } catch (error) {
     console.error('Failed to complete course', error);
-    toast.error('Failed to complete course.');
+
+    let errorMessage = 'Failed to complete course.';
+    if (axios.isAxiosError(error)) {
+      // Axios-specific error handling
+      errorMessage = error.response?.data?.message || error.message || errorMessage;
+    } else if (error instanceof Error) {
+      // General error handling
+      errorMessage = error.message;
+    }
+
+    toast.error(errorMessage);
   }
 };
 
@@ -87,8 +97,7 @@ export const markCourseCompleted = (courseId: string, studentEmail: string) => a
 
 export const likeCourse = (courseId: string, studentEmail: string) => async (dispatch: AppDispatch) => {
   try {
-    console.log("Course ID: ", courseId);
-    console.log("Student Email: ", studentEmail);
+    
     await axios.post(`${process.env.REACT_APP_API_URL}/courses/${courseId}/like`, { courseId, studentEmail });
     dispatch({ type: 'COURSE_LIKED', payload: { courseId } });
     toast.success('Course liked successfully!');
@@ -114,8 +123,7 @@ export const likeCourse = (courseId: string, studentEmail: string) => async (dis
 
 export const enrollStudentInCourse = ( courseId: string,studentEmail: string,) => async (dispatch: AppDispatch) => {
   try {
-    console.log("Course ID: ", courseId);
-    console.log("Student email: ", studentEmail);
+    
     await axios.post(`${process.env.REACT_APP_API_URL}/courses/${courseId}/enroll`, { studentEmail, courseId });
     dispatch({ type: 'COURSE_ENROLLED', payload: { studentEmail, courseId } });
     toast.success('Enrolled in course successfully!');

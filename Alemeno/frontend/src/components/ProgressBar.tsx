@@ -1,3 +1,4 @@
+// src/components/ProgressBar.tsx
 import React from 'react';
 
 interface ProgressBarProps {
@@ -5,7 +6,7 @@ interface ProgressBarProps {
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
-  console.log('Progress:', progress); // Check progress updates
+  
   return (
     <div className="relative pt-1">
       <div className="flex mb-2 items-center justify-between">
