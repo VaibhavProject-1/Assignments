@@ -49,7 +49,7 @@ interface FetchStudentError {
 }
 
 export const fetchStudentData = createAsyncThunk<
-  any, // The return type of the fulfilled action
+  AuthState, // The return type of the fulfilled action
   string, // The argument type for the thunk
   {
     rejectValue: FetchStudentError; // The type of the error payload

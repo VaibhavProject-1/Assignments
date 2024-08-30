@@ -35,25 +35,36 @@ export const fetchCourses = (): ThunkAction<void, RootState, unknown, CourseActi
 
 export const fetchCourseById = (id: string): ThunkAction<void, RootState, unknown, CourseActionTypes> => {
   return async (dispatch: Dispatch<CourseActionTypes>) => {
-    dispatch({ type: COURSE_ACTION_TYPES.FETCH_COURSE_BY_ID_REQUEST });
-    try {
-      const course = await fetchCourseByIdApi(id);
-      dispatch({
-        type: COURSE_ACTION_TYPES.FETCH_COURSE_BY_ID_SUCCESS,
-        payload: course,
-      });
-      toast.success('Course details fetched successfully!');
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-      dispatch({
-        type: COURSE_ACTION_TYPES.FETCH_COURSE_BY_ID_FAILURE,
-        payload: errorMessage,
-      });
-      toast.error(`Failed to fetch course details: ${errorMessage}`);
-    }
+      dispatch({ type: COURSE_ACTION_TYPES.FETCH_COURSE_BY_ID_REQUEST });
+      try {
+          const course = await fetchCourseByIdApi(id);
+          console.log("Dispatching FETCH_COURSE_BY_ID_SUCCESS with payload:", course);
+          dispatch({
+              type: COURSE_ACTION_TYPES.FETCH_COURSE_BY_ID_SUCCESS,
+              payload: course,
+          });
+          toast.success('Course details fetched successfully!');
+      } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+          dispatch({
+              type: COURSE_ACTION_TYPES.FETCH_COURSE_BY_ID_FAILURE,
+              payload: errorMessage,
+          });
+          toast.error(`Failed to fetch course details: ${errorMessage}`);
+      }
   };
 };
 
+
+
+export const markCourseCompleted = (courseId: string, studentEmail: string) => async (dispatch: AppDispatch) => {
+  try {
+    await axios.post(`${process.env.REACT_APP_API_URL}/courses/${courseId}/complete`, { studentEmail });
+    dispatch({ type: COURSE_ACTION_TYPES.MARK_COURSE_COMPLETED, payload: { courseId } });
+  } catch (error) {
+    console.error('Failed to complete course', error);
+  }
+};
 
 export const likeCourse = (courseId: string, studentEmail: string) => async (dispatch: AppDispatch) => {
   try {
@@ -105,5 +116,3 @@ export const enrollStudentInCourse = ( courseId: string,studentEmail: string,) =
     toast.error(`Failed to enroll course: ${errorMessage}`);
   }
 };
-
-

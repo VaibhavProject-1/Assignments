@@ -111,6 +111,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { logout } from '../redux/authSlice';
 import { toggleDarkMode } from '../redux/themeSlice';
+import { ReactComponent as SunIcon } from '../sun_icon.svg'; // Assuming you have imported the sun icon
+import { ReactComponent as MoonIcon } from '../moon_icon.svg'; // Assuming you have imported the moon icon
 
 const Navbar: React.FC = () => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -135,7 +137,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className={`p-4 ${darkMode ? 'bg-green-900 text-white' : 'bg-blue-600 text-white'}`}>
+    <nav className={`p-4 ${darkMode ? 'bg-violet-800 text-white' : 'bg-blue-600 text-white'}`}>
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-lg font-semibold">
           All Courses
@@ -161,23 +163,12 @@ const Navbar: React.FC = () => {
             </button>
           </div>
 
-          {/* Dark Mode Switch */}
+          {/* Dark Mode Toggle */}
           <button
             onClick={handleDarkModeToggle}
-            className="focus:outline-none flex items-center space-x-2"
+            className="focus:outline-none"
           >
-            <span>{darkMode ? 'Light Mode' : 'Dark Mode'}</span>
-            <div
-              className={`w-10 h-5 flex items-center bg-gray-300 rounded-full p-1 ${
-                darkMode ? 'bg-gray-700' : ''
-              }`}
-            >
-              <div
-                className={`bg-white w-4 h-4 rounded-full shadow-md transform duration-300 ease-in-out ${
-                  darkMode ? 'translate-x-5' : ''
-                }`}
-              ></div>
-            </div>
+            {darkMode ? <SunIcon className="w-6 h-6" /> : <MoonIcon className="w-6 h-6" />}
           </button>
 
           {/* Desktop Menu */}

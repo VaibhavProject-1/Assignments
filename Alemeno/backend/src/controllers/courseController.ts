@@ -223,6 +223,34 @@ export const likeCourse = async (req: Request, res: Response) => {
   }
 };
 
+export const completeCourse = async (req: Request, res: Response) => {
+  const { studentEmail } = req.body;
+  const { courseId } = req.params;
+
+  try {
+    const student = await Student.findOne({ email: studentEmail });
+    if (!student) {
+      return res.status(404).json({ message: 'Student not found' });
+    }
+
+    const enrolledCourse = student.enrolledCourses.find(ec => ec.courseId.toString() === courseId);
+    if (!enrolledCourse) {
+      return res.status(404).json({ message: 'Course not enrolled' });
+    }
+
+    // Mark the course as completed and set progress to 100
+    enrolledCourse.progress = 100;
+    enrolledCourse.completed = true;
+
+    await student.save();
+
+    res.status(200).json({ message: 'Course marked as completed' });
+  } catch (error) {
+    console.error('Error marking course as completed:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
 
 
 export const getCourseById = async (req: Request, res: Response) => {

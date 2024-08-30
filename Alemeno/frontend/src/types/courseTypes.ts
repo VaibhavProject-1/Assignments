@@ -22,6 +22,7 @@ export interface Course {
     thumbnail: string;
     dueDate: string;
     progress: number;
+    completed: boolean;
   }
   
   export interface CourseState {
@@ -38,6 +39,8 @@ export interface Course {
     FETCH_COURSE_BY_ID_REQUEST = 'FETCH_COURSE_BY_ID_REQUEST',
     FETCH_COURSE_BY_ID_SUCCESS = 'FETCH_COURSE_BY_ID_SUCCESS',
     FETCH_COURSE_BY_ID_FAILURE = 'FETCH_COURSE_BY_ID_FAILURE',
+    MARK_COURSE_COMPLETED = 'MARK_COURSE_COMPLETED',
+    
   }
   
   export interface FetchCoursesRequestAction {
@@ -67,6 +70,11 @@ export interface Course {
     type: COURSE_ACTION_TYPES.FETCH_COURSE_BY_ID_FAILURE;
     payload: string;
   }
+
+  export interface MarkCourseCompletedAction {
+    type: COURSE_ACTION_TYPES.MARK_COURSE_COMPLETED;
+    payload: { courseId: string };
+  }
   
   export type CourseActionTypes =
     | FetchCoursesRequestAction
@@ -74,5 +82,6 @@ export interface Course {
     | FetchCoursesFailureAction
     | FetchCourseByIdRequestAction
     | FetchCourseByIdSuccessAction
-    | FetchCourseByIdFailureAction;
+    | FetchCourseByIdFailureAction
+    | MarkCourseCompletedAction;
   
