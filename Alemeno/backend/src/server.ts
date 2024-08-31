@@ -14,14 +14,14 @@ const PORT = process.env.PORT || 5000;
 
 // Define CORS options
 const corsOptions = {
-    origin: ["*"], // Replace with your frontend URLs
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true, // Allow cookies to be sent across domains
-  };
-  
-  app.use(cors(corsOptions));
-  app.use(express.json());
+  origin: "*",
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true, // Allow cookies to be sent across domains if needed
+};
+
+app.use(cors(corsOptions)); // Apply CORS middleware
+app.use(express.json()); // Parse incoming JSON requests
 
 mongoose.connect(process.env.MONGO_URI as string, {
 })
