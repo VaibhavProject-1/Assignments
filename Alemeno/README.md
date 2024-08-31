@@ -57,10 +57,41 @@ Run the development server
 
 npm run start
 
+
+
 Access the application:
 
     Open your browser and navigate to http://localhost:3000 to view the frontend.
     The backend should be running on http://localhost:5000.
+
+Login with these names and emails:
+- **Name**: Aaron Lee, **Email**: aaron@example.com
+- **Name**: Charlie Brown, **Email**: charlie@example.com
+- **Name**: David Lee, **Email**: david@example.com
+- **Name**: Emily Davis, **Email**: emily@example.com
+- **Name**: Frank Thomas, **Email**: frank@example.com
+- **Name**: Grace Hall, **Email**: grace@example.com
+- **Name**: Henry Young, **Email**: henry@example.com
+- **Name**: Ivy Wilson, **Email**: ivy@example.com
+- **Name**: Jack Brown, **Email**: jack@example.com
+- **Name**: Kimberly Evans, **Email**: kimberly@example.com
+- **Name**: Laura Wilson, **Email**: laura@example.com
+- **Name**: Mark Thompson, **Email**: mark@example.com
+- **Name**: Nancy Robinson, **Email**: nancy@example.com
+- **Name**: Oscar Lee, **Email**: oscar@example.com
+- **Name**: Peter Martinez, **Email**: peter@example.com
+- **Name**: Rachel White, **Email**: rachel@example.com
+- **Name**: Steve Harris, **Email**: steve@example.com
+- **Name**: Tracy King, **Email**: tracy@example.com
+- **Name**: Uma Patel, **Email**: uma@example.com
+- **Name**: Vicky Brown, **Email**: vicky@example.com
+- **Name**: Will Green, **Email**: will@example.com
+- **Name**: Xavier Harris, **Email**: xavier@example.com
+- **Name**: Yvonne Black, **Email**: yvonne@example.com
+- **Name**: Zoe Anderson, **Email**: zoe@example.com
+
+
+
 Video Demonstration
 
 You can find a video demonstration of the project in the file Assignment318.mp4 located inside the Alemeno directory
