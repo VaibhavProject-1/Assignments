@@ -97,10 +97,12 @@ export const markCourseCompleted = (courseId: string, studentEmail: string) => a
 
 export const likeCourse = (courseId: string, studentEmail: string) => async (dispatch: AppDispatch) => {
   try {
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/courses/${courseId}/like`, { courseId, studentEmail });
     
-    await axios.post(`${process.env.REACT_APP_API_URL}/courses/${courseId}/like`, { courseId, studentEmail });
-    dispatch({ type: 'COURSE_LIKED', payload: { courseId } });
-    toast.success('Course liked successfully!');
+    dispatch({ type: COURSE_ACTION_TYPES.COURSE_ENROLLED, payload: { courseId } });
+    
+    // Show a success toast notification
+    toast.success(response.data.message || 'Course liked successfully!');
   } catch (error) {
     console.error('Failed to like course:', error);
 
@@ -114,6 +116,7 @@ export const likeCourse = (courseId: string, studentEmail: string) => async (dis
       errorMessage = error.message;
     }
 
+    // Show an error toast notification with the message from the backend
     toast.error(`Failed to like course: ${errorMessage}`);
   }
 };
@@ -121,14 +124,18 @@ export const likeCourse = (courseId: string, studentEmail: string) => async (dis
 
 
 
-export const enrollStudentInCourse = ( courseId: string,studentEmail: string,) => async (dispatch: AppDispatch) => {
+
+
+export const enrollStudentInCourse = (courseId: string, studentEmail: string) => async (dispatch: AppDispatch) => {
   try {
+    const response = await axios.post(`${process.env.REACT_APP_API_URL}/courses/${courseId}/enroll`, { studentEmail, courseId });
     
-    await axios.post(`${process.env.REACT_APP_API_URL}/courses/${courseId}/enroll`, { studentEmail, courseId });
-    dispatch({ type: 'COURSE_ENROLLED', payload: { studentEmail, courseId } });
-    toast.success('Enrolled in course successfully!');
+    dispatch({ type: COURSE_ACTION_TYPES.COURSE_ENROLLED, payload: { studentEmail, courseId } });
+    
+    // Show a success toast notification
+    toast.success(response.data.message || 'Enrolled in course successfully!');
   } catch (error) {
-    console.error('Failed to enroll course:', error);
+    console.error('Failed to enroll in course:', error);
 
     let errorMessage = 'An unknown error occurred';
 
@@ -140,6 +147,7 @@ export const enrollStudentInCourse = ( courseId: string,studentEmail: string,) =
       errorMessage = error.message;
     }
 
-    toast.error(`Failed to enroll course: ${errorMessage}`);
+    // Show an error toast notification with the message from the backend
+    toast.error(`Failed to enroll in course: ${errorMessage}`);
   }
 };

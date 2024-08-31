@@ -55,7 +55,18 @@ const CourseDetails: React.FC = () => {
     }
   }, [id, enrolledCourses]);
 
-  
+  const calculateDueDate = (duration: string): string => {
+    const currentDate = new Date();
+    const [amount, unit] = duration.split(' ');
+
+    if (unit.startsWith('week')) {
+      currentDate.setDate(currentDate.getDate() + parseInt(amount) * 7);
+    } else if (unit.startsWith('day')) {
+      currentDate.setDate(currentDate.getDate() + parseInt(amount));
+    }
+
+    return currentDate.toDateString();  // Return the due date as a readable string
+  };
 
   const handleLikeCourse = () => {
     if (id && studentEmail) {
@@ -69,30 +80,14 @@ const CourseDetails: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (id && enrolledCourses.length > 0) {
-      const matchingCourse = enrolledCourses.find((enrolledCourse) => enrolledCourse.courseId === id);
-      
-      if (matchingCourse) {
-        setEnrollmentData({
-          progress: matchingCourse.progress,
-          completed: matchingCourse.completed,
-        });
-      }
-    }
-  }, [id, enrolledCourses]);
-  
-
-const handleCompleteCourse = async () => {
-  if (id && studentEmail) {
+  const handleCompleteCourse = async () => {
+    if (id && studentEmail) {
       await dispatch(markCourseCompleted(id, studentEmail));
       
       // Update the local state after dispatching the action
       setEnrollmentData({ progress: 100, completed: true });
-      
-  }
-};
-
+    }
+  };
 
   const toggleItemExpansion = (index: number) => {
     setExpandedItems(prevExpandedItems =>
@@ -105,6 +100,8 @@ const handleCompleteCourse = async () => {
   if (loading || !course) {
     return <Spinner />;
   }
+
+  const dueDate = isAuthenticated ? calculateDueDate(course.duration) : null;
 
   return (
     <div
@@ -135,6 +132,12 @@ const handleCompleteCourse = async () => {
         <p className="font-semibold">Duration:</p>
         <p className={darkMode ? 'text-gray-300' : 'text-gray-800'}>{course.duration}</p>
       </div>
+      {dueDate && (
+        <div className="mb-4">
+          <p className="font-semibold">Due Date:</p>
+          <p className={darkMode ? 'text-gray-300' : 'text-gray-800'}>{dueDate}</p>
+        </div>
+      )}
       <div className="mb-4">
         <p className="font-semibold">Schedule:</p>
         <p className={darkMode ? 'text-gray-300' : 'text-gray-800'}>{course.schedule}</p>

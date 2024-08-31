@@ -6,6 +6,8 @@ import CourseCard from '../components/CourseCard';
 import SearchBar from '../components/SearchBar';
 import { Course } from '../types/courseTypes';
 import Spinner from '../components/Spinner';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 const CourseList: React.FC = () => {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -13,6 +15,8 @@ const CourseList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   useEffect(() => {
     const getCourses = async () => {
@@ -46,7 +50,7 @@ const CourseList: React.FC = () => {
     setFilteredCourses(filtered);
   }, [searchQuery, courses]);
 
-  if (loading) return <Spinner/>;
+  if (loading) return <Spinner />;
   if (error) return <p>{error}</p>;
 
   return (
@@ -71,6 +75,7 @@ const CourseList: React.FC = () => {
               instructor={course.instructor}
               imageUrl={course.imageUrl}
               description={course.description}
+              duration={isAuthenticated ? course.duration : undefined}  // Only pass duration if logged in
               likeCount={course.likedBy?.length || 0} // Ensure likeCount is always provided
             />
           ))

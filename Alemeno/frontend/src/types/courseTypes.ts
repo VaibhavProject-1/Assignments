@@ -6,6 +6,12 @@ export interface SyllabusItem {
     content: string;
   }
   
+  export interface EnrolledCourse {
+    courseId: string;
+    progress: number;
+    completed: boolean;
+    enrollmentDate: string;  // Add this line if it is missing
+  }
 
 export interface Course {
     _id: string;
@@ -42,6 +48,7 @@ export interface Course {
     FETCH_COURSE_BY_ID_FAILURE = 'FETCH_COURSE_BY_ID_FAILURE',
     MARK_COURSE_COMPLETED = 'MARK_COURSE_COMPLETED',
     UPDATE_ENROLLED_COURSES = 'UPDATE_ENROLLED_COURSES',
+    COURSE_ENROLLED = 'COURSE_ENROLLED', 
     
   }
   
@@ -92,5 +99,6 @@ export interface Course {
     | FetchCourseByIdRequestAction
     | FetchCourseByIdSuccessAction
     | FetchCourseByIdFailureAction
-    | MarkCourseCompletedAction;
+    | MarkCourseCompletedAction
+    | { type: COURSE_ACTION_TYPES.COURSE_ENROLLED; payload: { studentEmail: string; courseId: string } };
   

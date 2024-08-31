@@ -36,6 +36,7 @@ interface EnrolledCourse {
   courseId: string;  // Reference to the Course _id
   progress: number;
   completed: boolean;
+  enrollmentDate: string;
 }
 
 interface AuthState {
