@@ -53,6 +53,13 @@ bash
 
 npm install or npm i react
 
+Environment setup
+
+Create a .env file in the frontend directory with the following variables:
+
+REACT_APP_API_URL=http://localhost:5000/api
+and for unsplash API key please check the message I have sent with the API key in the internshala messages
+
 Run the development server
 
 npm run start
